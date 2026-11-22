@@ -140,8 +140,82 @@
         </button>
       </div>
 
-      <!-- ================= STEP 5: GRAND FINALE WISH ================= -->
-      <div class="step-slide" data-step="5">
+      <!-- ================= STEP 5: SECRET VAULT (PASSWORD PROTECTED) ================= -->
+      <div class="step-slide" data-step="5" id="vaultSlide">
+        
+        <!-- State A: Locked Gate -->
+        <div id="vaultLockScreen" class="vault-container">
+          <div class="lock-icon-pulse">🔒</div>
+          <div class="secret-tag vault-tag">RESTRICTED • TOP SECRET</div>
+          <h2 class="slide-title">Secret Vault 🔐</h2>
+          <p class="slide-desc">
+            Yeh page strictly private hai. Sirf wahi open kar sakta hai jiske paas secret password ho!
+          </p>
+
+          <form class="vault-form" onsubmit="event.preventDefault(); checkVaultPassword();">
+            <div class="vault-input-group">
+              <input type="password" id="vaultPasswordInput" class="vault-input" placeholder="Password enter karo..." autocomplete="off">
+              <button class="vault-toggle-eye" id="vaultEyeIcon" type="button" onclick="toggleVaultPasswordVisibility()">👁️</button>
+            </div>
+            <p class="vault-error-msg hidden" id="vaultError">❌ Galat password! Ashar se password maango 😂</p>
+            
+            <div class="vault-buttons-group">
+              <button class="action-btn primary-btn" type="submit">
+                <span>Unlock Vault 🔓</span>
+              </button>
+              <button class="action-btn text-skip-btn" type="button" onclick="goToStep(6)">
+                <span>Skip to Birthday Wish ⏭️</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- State B: Unlocked Private Content -->
+        <div id="vaultUnlockedContent" class="vault-container hidden">
+          <div class="secret-tag vault-tag-unlocked">✨ ACCESS GRANTED • TOP SECRET</div>
+          <h2 class="slide-title">Ahsan's Secret Vault 📁</h2>
+          <p class="slide-desc">
+            Yeh private cheezein sirf tumhare dekhne ke liye hain! 🤫
+          </p>
+
+          <!-- 1. Private Photo -->
+          <div class="polaroid-teaser private-polaroid">
+            <div class="polaroid-frame">
+              <img src="images/private1.jpg" alt="Secret Photo" onerror="this.src='images/photo1.jpg'">
+              <div class="polaroid-caption">Classified Memory 🔒</div>
+            </div>
+          </div>
+
+          <!-- 2. Private Voice Note -->
+          <div class="private-audio-card">
+            <div class="audio-card-header">
+              <span>🎙️ Secret Voice Note:</span>
+            </div>
+            <audio id="privateVoiceNote" controls src="audio/secret.mpeg" preload="none" class="custom-audio-player"></audio>
+          </div>
+
+          <!-- 3. Confidential Letter / Secret Message -->
+          <div class="letter-card private-note-card">
+            <div class="letter-header">
+              <span>🔐 Confidential Note</span>
+              <span>For Ahsan Only</span>
+            </div>
+            <p class="letter-text" id="vaultCustomNote">
+              Yeh special secret page sirf tumhare liye unlock hua hai! <br><br>
+              Yahan aap jo bhi secret memory, andar ki baat ya personal message likhna chahein, woh yahan aayega! ❤️🫂
+            </p>
+          </div>
+
+          <!-- Proceed to Grand Finale -->
+          <button class="action-btn primary-btn next-btn" onclick="goToStep(6)" style="margin-top: 15px;">
+            <span>Next: Birthday Wish 🎂</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- ================= STEP 6: GRAND FINALE WISH ================= -->
+      <div class="step-slide" data-step="6">
         <h1 class="grand-title">
           HAPPY BIRTHDAY <br>
           <span class="name-gradient">MERE PIAYARE BHAI!</span>

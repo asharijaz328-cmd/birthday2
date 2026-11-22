@@ -992,3 +992,153 @@ body {
     padding: 12px 14px;
   }
 }
+
+/* ================= SECRET VAULT STYLES ================= */
+.vault-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.vault-tag {
+  background: rgba(168, 85, 247, 0.18) !important;
+  color: #c084fc !important;
+  border-color: rgba(168, 85, 247, 0.45) !important;
+}
+
+.vault-tag-unlocked {
+  background: rgba(0, 255, 136, 0.15) !important;
+  color: #00ff88 !important;
+  border-color: rgba(0, 255, 136, 0.45) !important;
+}
+
+.vault-form {
+  width: 100%;
+  max-width: 320px;
+  margin: 10px auto 0;
+}
+
+.vault-input-group {
+  display: flex;
+  align-items: center;
+  background: rgba(12, 15, 26, 0.85);
+  border: 1.5px solid rgba(255, 215, 0, 0.35);
+  border-radius: 14px;
+  padding: 4px 6px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s ease;
+}
+
+.vault-input-group:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 16px var(--gold-glow);
+}
+
+.vault-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 12px 12px;
+  font-family: inherit;
+}
+
+.vault-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.92rem;
+}
+
+.vault-toggle-eye {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 8px 10px;
+  line-height: 1;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.vault-toggle-eye:active {
+  transform: scale(0.9);
+}
+
+.vault-error-msg {
+  color: #ff5252;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 8px;
+  text-align: center;
+}
+
+.vault-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+.text-skip-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  color: var(--text-muted);
+  box-shadow: none;
+}
+
+.text-skip-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--gold);
+  color: #ffffff;
+}
+
+.shake-input {
+  animation: vaultShake 0.4s ease-in-out;
+  border-color: #ff5252 !important;
+}
+
+@keyframes vaultShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+.private-polaroid {
+  margin: 15px auto;
+  max-width: 250px;
+}
+
+.private-audio-card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 215, 0, 0.25);
+  border-radius: 14px;
+  padding: 14px;
+  margin: 12px 0;
+  text-align: left;
+}
+
+.audio-card-header {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.custom-audio-player {
+  width: 100%;
+  height: 38px;
+  border-radius: 8px;
+  accent-color: var(--gold);
+  outline: none;
+}
+
+.private-note-card {
+  background: rgba(22, 25, 40, 0.85);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  margin: 12px 0;
+}
+

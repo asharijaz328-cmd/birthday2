@@ -246,7 +246,7 @@ updateCountdown();
 
 // State Management
 let currentStep = 1;
-const totalSteps = 5;
+const totalSteps = 6;
 let soundEnabled = true;
 let audioCtx = null;
 let bgMusicInterval = null;
@@ -371,7 +371,7 @@ let birthdayMusicLoopTimer = null;
 
 // Complete, Harmonized & Continuous Happy Birthday Song (Loud & Extended Loop)
 function playHappyBirthdayMelody() {
-  if (!soundEnabled || currentStep !== 5) return;
+  if (!soundEnabled || currentStep !== 6) return;
   initAudio();
   if (!audioCtx) return;
 
@@ -415,7 +415,7 @@ function playHappyBirthdayMelody() {
   let cumulativeTime = 0;
   melody.forEach((note) => {
     setTimeout(() => {
-      if (soundEnabled && currentStep === 5) {
+      if (soundEnabled && currentStep === 6) {
         playRichTone(note.f, note.d / 1000, 0.48);
         if (note.b) {
           playTone(note.b, 'sine', (note.d / 1000) * 1.1, 0.22);
@@ -427,7 +427,7 @@ function playHappyBirthdayMelody() {
 
   // Automatically Loop Continuously While on Final Page
   birthdayMusicLoopTimer = setTimeout(() => {
-    if (soundEnabled && currentStep === 5) {
+    if (soundEnabled && currentStep === 6) {
       playHappyBirthdayMelody();
     }
   }, cumulativeTime + 1800);
@@ -445,13 +445,77 @@ function playAudioClip(id) {
   }
 }
 
+// ================= SECRET VAULT PASSWORD LOGIC =================
+const VAULT_PASSWORD = "1";
+let vaultUnlocked = false;
+
+function checkVaultPassword() {
+  initAudio();
+  const input = document.getElementById('vaultPasswordInput');
+  const errorEl = document.getElementById('vaultError');
+  if (!input) return;
+
+  const entered = input.value.trim();
+  if (entered === VAULT_PASSWORD) {
+    vaultUnlocked = true;
+    if (errorEl) errorEl.classList.add('hidden');
+
+    // Play fanfare / celebration
+    playFanfareSound();
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 } });
+    }
+
+    // Discord Alert
+    sendDiscordNotification('🔓 Secret Vault Unlocked by Visitor (Password Entered)!');
+
+    // Smooth transition from Lock Gate to Unlocked Content
+    const lockScreen = document.getElementById('vaultLockScreen');
+    const unlockedContent = document.getElementById('vaultUnlockedContent');
+    if (lockScreen && unlockedContent) {
+      lockScreen.style.opacity = '0';
+      lockScreen.style.transition = 'opacity 0.35s ease';
+      setTimeout(() => {
+        lockScreen.classList.add('hidden');
+        unlockedContent.classList.remove('hidden');
+        unlockedContent.style.opacity = '0';
+        unlockedContent.style.transition = 'opacity 0.4s ease';
+        setTimeout(() => {
+          unlockedContent.style.opacity = '1';
+        }, 50);
+      }, 350);
+    }
+  } else {
+    // Wrong password
+    playAudioClip('fahhSound');
+    if (errorEl) errorEl.classList.remove('hidden');
+    input.parentElement.classList.add('shake-input');
+    setTimeout(() => input.parentElement.classList.remove('shake-input'), 450);
+    input.value = '';
+    input.focus();
+  }
+}
+
+function toggleVaultPasswordVisibility() {
+  const input = document.getElementById('vaultPasswordInput');
+  const eyeBtn = document.getElementById('vaultEyeIcon');
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (eyeBtn) eyeBtn.innerText = '🙈';
+  } else {
+    input.type = 'password';
+    if (eyeBtn) eyeBtn.innerText = '👁️';
+  }
+}
+
 // Navigation between steps
 function goToStep(stepNumber) {
   initAudio();
   playPopSound();
 
-  // Clear music loop if navigating away from finale
-  if (stepNumber !== 5 && birthdayMusicLoopTimer) {
+  // Clear music loop if navigating away from finale (Step 6)
+  if (stepNumber !== 6 && birthdayMusicLoopTimer) {
     clearTimeout(birthdayMusicLoopTimer);
     birthdayMusicLoopTimer = null;
   }
@@ -461,6 +525,13 @@ function goToStep(stepNumber) {
   if (treatEl && stepNumber !== 4) {
     treatEl.pause();
     treatEl.currentTime = 0;
+  }
+
+  // Stop private voice note if navigating away from Step 5
+  const privateVoiceEl = document.getElementById('privateVoiceNote');
+  if (privateVoiceEl && stepNumber !== 5) {
+    privateVoiceEl.pause();
+    privateVoiceEl.currentTime = 0;
   }
 
   // Play hehe on Step 1 -> Step 2
@@ -495,6 +566,12 @@ function goToStep(stepNumber) {
       // Step 4: Treat page voice clip
       playAudioClip('treatSound');
     } else if (currentStep === 5) {
+      // Step 5: Secret Vault Gate
+      const vaultInput = document.getElementById('vaultPasswordInput');
+      if (vaultInput && !vaultUnlocked) {
+        setTimeout(() => vaultInput.focus(), 350);
+      }
+    } else if (currentStep === 6) {
       // GRAND FINALE
       fireCelebrationConfetti();
       playFanfareSound();
@@ -529,7 +606,7 @@ function blowCandles() {
 
   fireCelebrationConfetti();
   playFanfareSound();
-  sendDiscordNotification('🎂 Candles Blown Out on Step 5 (Finale reached)!');
+  sendDiscordNotification('🎂 Candles Blown Out on Step 6 (Finale reached)!');
 }
 
 // Confetti blast
@@ -578,7 +655,7 @@ if (soundBtn) {
         a.pause();
         a.currentTime = 0;
       });
-    } else if (soundEnabled && currentStep === 5) {
+    } else if (soundEnabled && currentStep === 6) {
       playHappyBirthdayMelody();
     }
   });
