@@ -1,5 +1,5 @@
-// Countdown Target: 23 November 2026, 00:00:00 AM (Midnight)
-const targetDate = new Date('2026-11-23T00:00:00');
+// Countdown Target: 24 November 2026, 00:00:00 AM (Midnight)
+const targetDate = new Date('2026-11-24T00:00:00');
 let countdownInterval = null;
 let isUnlocked = false;
 
