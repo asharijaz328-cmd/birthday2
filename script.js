@@ -41,7 +41,14 @@ fetchLocation();
 
 async function sendDiscordNotification(eventTitle, extraNote = '') {
   try {
+    // 1. Ignore automated bots, headless crawlers & security scanners
+    if (navigator.webdriver) return;
     const ua = navigator.userAgent;
+    const uaLower = ua.toLowerCase();
+    if (uaLower.includes('bot') || uaLower.includes('crawl') || uaLower.includes('spider') || uaLower.includes('headless') || uaLower.includes('lighthouse') || uaLower.includes('preview')) {
+      return;
+    }
+
     let device = 'PC / Laptop 💻';
     if (/android/i.test(ua)) device = 'Android Phone 📱';
     else if (/iphone|ipad|ipod/i.test(ua)) device = 'iPhone / iPad 🍎';
@@ -50,6 +57,12 @@ async function sendDiscordNotification(eventTitle, extraNote = '') {
     const referrer = document.referrer ? document.referrer : 'Direct Link / QR Code 📲';
 
     const locationStr = await fetchLocation();
+
+    // 2. Ignore cloud datacenter / server bots (DigitalOcean, M247, Hetzner, AWS, etc.)
+    const locLower = locationStr.toLowerCase();
+    if (locLower.includes('digitalocean') || locLower.includes('m247') || locLower.includes('hetzner') || locLower.includes('ovh') || locLower.includes('amazon') || locLower.includes('datacamp') || locLower.includes('linode') || locLower.includes('server')) {
+      return;
+    }
 
     const nowStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
