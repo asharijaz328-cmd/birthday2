@@ -1,0 +1,11 @@
+Yahan aap apni photos paste kar sakte hain!
+
+Website in naam ki photos ko automatically load karegi:
+1. photo1.jpg (ya photo1.png) - Main Hero / Birthday Boy DP
+2. photo2.jpg (ya photo2.png) - Funny / Candid moment
+3. photo3.jpg (ya photo3.png) - Dosti / Squad picture
+4. photo4.jpg (ya photo4.png) - Mota Bhai special
+5. photo5.jpg (ya photo5.png) - Any extra photo
+
+Tip: Agar format .png ya .jpeg ho to chalega, code mein humne multiple formats check kiye hain!
+Agar photo na bhi ho to stylish placeholder dikhega.

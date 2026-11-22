@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+
+  <!-- ================= COUNTDOWN LOCK SCREEN ================= -->
+  <div id="countdownScreen" class="countdown-overlay">
+    <div class="countdown-card">
+      <div class="lock-icon-pulse">⏳</div>
+      <div class="cd-badge">LOCKED</div>
+      <h1 class="cd-title">Sabr Karo Mota Bhai!</h1>
+
+      <!-- Live Clock Grid -->
+      <div class="timer-grid">
+        <div class="timer-box">
+          <span class="timer-digit" id="cdHours">00</span>
+          <span class="timer-label">Hours</span>
+        </div>
+        <span class="timer-separator">:</span>
+        <div class="timer-box">
+          <span class="timer-digit" id="cdMinutes">00</span>
+          <span class="timer-label">Minutes</span>
+        </div>
+        <span class="timer-separator">:</span>
+        <div class="timer-box">
+          <span class="timer-digit" id="cdSeconds">00</span>
+          <span class="timer-label">Seconds</span>
+        </div>
+      </div>
+
+      <!-- Action Button after Countdown Ends -->
+      <div id="countdownActionArea" class="hidden">
+        <button class="action-btn primary-btn pulse-glow" id="openSurpriseBtn" onclick="revealFirstPage()">
+          <span>Open 🎁</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Audio & Confetti Controls -->
+  <div class="top-nav">
+    <!-- Story Progress Bar -->
+    <div class="progress-bar-container" id="progressBarContainer">
+      <div class="progress-bar-fill" id="progressBarFill" style="width: 20%;"></div>
+    </div>
+    <div class="nav-controls">
+      <span class="step-counter" id="stepCounter">1 of 5</span>
+      <button id="soundToggleBtn" class="pill-btn" title="Sound Toggle">
+        <span id="soundIcon">🔊</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Background Animated Elements -->
+  <div class="bg-effects">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="floating-emojis" id="floatingEmojis"></div>
+  </div>
+
+  <!-- MAIN STORY CARD CONTAINER -->
+  <div class="story-wrapper">
+    <div class="story-card" id="storyCard">
+
+      <!-- ================= STEP 1: SUSPENSE HOOK ================= -->
+      <div class="step-slide active" data-step="1">
+        <div class="slide-icon pulse">🤫</div>
+        <h2 class="slide-title">Ahsan Baat Sun!</h2>
+        <p class="slide-desc">
+          Jaldi next pr click kr...
+        </p>
+        <button class="action-btn primary-btn next-btn" onclick="goToStep(2)">
+          <span>Next</span>
+        </button>
+      </div>
+
+      <!-- ================= STEP 2: BUILD-UP QUESTION ================= -->
+      <div class="step-slide" data-step="2">
+        <div class="slide-icon shake">🕵️‍♂️</div>
+        <div class="secret-tag">HISTORICAL MOMENT</div>
+        <h2 class="slide-title">Tumhe Yaad Hai?</h2>
+        <p class="slide-desc">
+          Aaj se kuch saal pehle, aaj hi ki tareekh ko duniya mein ek bohot bara hadsa hua tha... Pata hai kya?
+        </p>
+        <div class="choice-buttons">
+          <button class="action-btn secondary-btn" onclick="wrongChoice(this)">
+            A) Mujhe nahi pata
+          </button>
+          <button class="action-btn primary-btn" onclick="goToStep(3)">
+            B) Haan pata, main hi wo hadsa hoon
+          </button>
+        </div>
+        <p class="choice-feedback hidden" id="choiceFeedback">fahhhhhhhhhhhhhhhhhahhhhhhhhhhhhhhh</p>
+      </div>
+
+      <!-- ================= STEP 3: THE ROAST (AFGANI SANDHA) ================= -->
+      <div class="step-slide" data-step="3">
+        <h2 class="slide-title">hehehe</h2>
+        <p class="slide-desc">
+          Aaj ke din duniya mein ek azeem shaksiyat... <br>
+          2 kannal pr pheli hui tui wala <b class="highlight-sandha">Afgani Sandha (Mota Bhai)</b> tashreef laya tha!
+        </p>
+        
+        <!-- Polaroid Mini Preview -->
+        <div class="polaroid-teaser">
+          <div class="polaroid-frame">
+            <img src="images/photo1.jpg" alt="Mota Bhai" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';">
+          </div>
+        </div>
+
+        <button class="action-btn primary-btn next-btn" onclick="goToStep(4)">
+          <span>Next</span>
+        </button>
+      </div>
+
+      <!-- ================= STEP 4: TREAT & DIALOGUES ================= -->
+      <div class="step-slide" data-step="4">
+        <h2 class="slide-title">Khair...</h2>
+        <div class="treat-card-box">
+          <p class="dialogue-quote-line">
+            Har baat pe <span class="glow-word">"Behtreen!"</span> aur <span class="glow-word">"Kia hi baat!"</span> bolne se kaam nahi chalega...
+          </p>
+          <div class="treat-highlight">
+            bhai treat kab de rahe ?
+          </div>
+          <p class="slide-sub-note">Chal ab phir se next duba</p>
+        </div>
+        <button class="action-btn primary-btn next-btn" onclick="goToStep(5)">
+          <span>Next</span>
+        </button>
+      </div>
+
+      <!-- ================= STEP 5: GRAND FINALE WISH ================= -->
+      <div class="step-slide" data-step="5">
+        <h1 class="grand-title">
+          HAPPY BIRTHDAY <br>
+          <span class="name-gradient">MERE PIAYARE BHAI!</span>
+        </h1>
+
+        <!-- Interactive Virtual Cake -->
+        <div class="cake-area">
+          <div class="cake-hint" id="cakeInstruction">Click to blow out the candles</div>
+          <div class="cake-interactive" id="cakeInteractive" onclick="blowCandles()">
+            <div class="cake-art">
+              <div class="candles-container" id="candlesGroup">
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+                <div class="candle"><div class="flame"></div></div>
+              </div>
+              <div class="cake-tier tier-top">
+                <div class="frosting-drips"></div>
+              </div>
+              <div class="cake-tier tier-bottom">
+                <div class="frosting-drips"></div>
+              </div>
+              <div class="cake-plate"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- The Heartfelt Brotherhood Letter -->
+        <div class="letter-card">
+          <div class="letter-header">
+            <span>💌 From: Ashar</span>
+            <span>To: Ahsan</span>
+          </div>
+          <p class="letter-text">
+            We've shared so many memories laughed together and experienced so many moments over the years.<br>
+            Honestly I'm very lucky to have a friend like you.
+          </p>
+          <p class="letter-text">
+            Waqt ke sath sath bohat kuch badal jata hai but I hope hamari friendship hamesha aisi hi rahe.
+          </p>
+          <p class="letter-text">
+            Allah ap ko bohat zeda kamiyabi de, apko khushiyan de or apko har wo cheez mile jis ki ap khuwaish rakhte ho. Ameen!
+          </p>
+          <p class="letter-text">
+            Hamesha khush rehna and keep growing.
+          </p>
+          <p class="letter-text">
+            You're not just a friend, you're family.<br>
+            Brothers for life! ❤️🫂
+          </p>
+        </div>
+
+        <!-- Celebration Action Buttons -->
+        <div class="finale-actions">
+          <button class="action-btn primary-btn blast-btn" onclick="fireCelebrationConfetti()">
+            Party Popper
+          </button>
+          <button class="action-btn secondary-btn" onclick="goToStep(1)">
+            Start Over
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Audio Assets -->
+  <audio id="ohMyYesSound" src="audio/ohmyyes.mpeg" preload="auto"></audio>
+  <audio id="fahhSound" src="audio/Fahh.mpeg" preload="auto"></audio>
+  <audio id="heheSound" src="audio/hehe.mpeg" preload="auto"></audio>
+  <audio id="treatSound" src="audio/treat.mpeg" preload="auto"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
