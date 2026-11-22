@@ -460,6 +460,7 @@ function checkVaultPassword() {
   const entered = input.value.trim();
   if (entered === VAULT_PASSWORD) {
     vaultUnlocked = true;
+    preloadVaultVideos();
     if (errorEl) errorEl.classList.add('hidden');
 
     // Play fanfare / celebration
@@ -511,6 +512,23 @@ function toggleVaultPasswordVisibility() {
   }
 }
 
+// Smart Background Preloading for Vault Videos
+let vaultVideosPreloaded = false;
+function preloadVaultVideos() {
+  if (vaultVideosPreloaded) return;
+  vaultVideosPreloaded = true;
+
+  const videos = document.querySelectorAll('.vault-video');
+  videos.forEach((video, index) => {
+    video.preload = 'auto';
+    setTimeout(() => {
+      try {
+        video.load();
+      } catch (_) {}
+    }, index * 180);
+  });
+}
+
 // Switch tabs inside Secret Vault (Photos, Videos, Special Note)
 function switchVaultTab(tabName, btn) {
   document.querySelectorAll('.vault-tab-btn').forEach(b => b.classList.remove('active'));
@@ -521,7 +539,12 @@ function switchVaultTab(tabName, btn) {
   const tabNote = document.getElementById('vaultTabNote');
 
   if (tabPhotos) tabPhotos.classList.toggle('hidden', tabName !== 'photos');
-  if (tabVideos) tabVideos.classList.toggle('hidden', tabName !== 'videos');
+  if (tabVideos) {
+    tabVideos.classList.toggle('hidden', tabName !== 'videos');
+    if (tabName === 'videos') {
+      preloadVaultVideos();
+    }
+  }
   if (tabNote) tabNote.classList.toggle('hidden', tabName !== 'note');
 
   // Pause playing videos when switching away from videos tab
@@ -603,7 +626,8 @@ function goToStep(stepNumber) {
       // Step 4: Treat page voice clip
       playAudioClip('treatSound');
     } else if (currentStep === 5) {
-      // Step 5: Secret Vault Gate
+      // Step 5: Secret Vault Gate (Start preloading videos in background)
+      preloadVaultVideos();
       const vaultInput = document.getElementById('vaultPasswordInput');
       if (vaultInput && !vaultUnlocked) {
         setTimeout(() => vaultInput.focus(), 350);
