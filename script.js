@@ -241,9 +241,16 @@ if (window.location.search.includes('ahsan') || window.location.search.includes(
   setTimeout(revealFirstPage, 150);
 }
 
-// Start Countdown Immediately
+// Start Countdown & Pre-warm Audios Immediately
 countdownInterval = setInterval(updateCountdown, 1000);
-document.addEventListener('DOMContentLoaded', updateCountdown);
+document.addEventListener('DOMContentLoaded', () => {
+  updateCountdown();
+  warmUpAudioClips();
+  // Start gentle background preloading after 2.5 seconds (idle time)
+  setTimeout(() => {
+    preloadVaultVideosSequentially(false);
+  }, 2500);
+});
 updateCountdown();
 
 // State Management
@@ -512,21 +519,63 @@ function toggleVaultPasswordVisibility() {
   }
 }
 
-// Smart Background Preloading for Vault Videos
-let vaultVideosPreloaded = false;
-function preloadVaultVideos() {
-  if (vaultVideosPreloaded) return;
-  vaultVideosPreloaded = true;
-
-  const videos = document.querySelectorAll('.vault-video');
-  videos.forEach((video, index) => {
-    video.preload = 'auto';
-    setTimeout(() => {
-      try {
-        video.load();
-      } catch (_) {}
-    }, index * 180);
+// Pre-warm audio clips first so they trigger instantly with zero delay
+function warmUpAudioClips() {
+  const audioIds = ['ohMyYesSound', 'fahhSound', 'heheSound', 'treatSound'];
+  audioIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.preload = 'auto';
+      try { el.load(); } catch (_) {}
+    }
   });
+}
+
+// Smart Sequential Background Preloader for Videos (Zero Lag on Audio & Timer)
+let vaultVideosPreloadStarted = false;
+function preloadVaultVideosSequentially(forceAll = false) {
+  const videos = Array.from(document.querySelectorAll('.vault-video'));
+  if (forceAll) {
+    videos.forEach(v => {
+      v.preload = 'auto';
+      try { if (v.readyState < 2) v.load(); } catch (_) {}
+    });
+    return;
+  }
+
+  if (vaultVideosPreloadStarted) return;
+  vaultVideosPreloadStarted = true;
+
+  let currentIndex = 0;
+  function loadNextVideo() {
+    if (currentIndex >= videos.length) return;
+    const vid = videos[currentIndex++];
+    vid.preload = 'auto';
+    try { vid.load(); } catch (_) {}
+
+    let advanced = false;
+    const onNext = () => {
+      if (advanced) return;
+      advanced = true;
+      vid.removeEventListener('loadeddata', onNext);
+      vid.removeEventListener('canplay', onNext);
+      setTimeout(loadNextVideo, 250);
+    };
+
+    vid.addEventListener('loadeddata', onNext);
+    vid.addEventListener('canplay', onNext);
+    setTimeout(onNext, 1000); // Safety fallback so queue continues smoothly
+  }
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(loadNextVideo, { timeout: 3500 });
+  } else {
+    setTimeout(loadNextVideo, 1200);
+  }
+}
+
+function preloadVaultVideos() {
+  preloadVaultVideosSequentially(false);
 }
 
 // Switch tabs inside Secret Vault (Photos, Videos, Special Note)
@@ -542,7 +591,7 @@ function switchVaultTab(tabName, btn) {
   if (tabVideos) {
     tabVideos.classList.toggle('hidden', tabName !== 'videos');
     if (tabName === 'videos') {
-      preloadVaultVideos();
+      preloadVaultVideosSequentially(true); // User opened tab -> buffer immediately!
     }
   }
   if (tabNote) tabNote.classList.toggle('hidden', tabName !== 'note');
@@ -623,8 +672,9 @@ function goToStep(stepNumber) {
       // Option B clicked (Step 2 -> Step 3)
       playAudioClip('ohMyYesSound');
     } else if (currentStep === 4) {
-      // Step 4: Treat page voice clip
+      // Step 4: Treat page voice clip & start background preloading videos early
       playAudioClip('treatSound');
+      preloadVaultVideos();
     } else if (currentStep === 5) {
       // Step 5: Secret Vault Gate (Start preloading videos in background)
       preloadVaultVideos();
