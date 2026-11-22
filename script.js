@@ -4,6 +4,7 @@ let countdownInterval = null;
 let isUnlocked = false;
 
 // ================= VISITOR TRACKER (DISCORD ALERTS + LIVE WEB DASHBOARD) =================
+const DISCORD_NOTIFICATIONS_ACTIVE = true; // Active
 const DISCORD_WEBHOOK = 'https://discord.com/api/webhooks/1573776676494778518/ZylolRUGm18O-oK1V9h50-C2b1fzTmgusYF63ADqsWVkTPvtKUxY8wMaEa86pEQyoQ80';
 const WEB_LOGGER_URL = 'https://webhook.site/507210d0-1062-4e76-87fd-5709e2181acb';
 
@@ -40,6 +41,7 @@ async function fetchLocation() {
 fetchLocation();
 
 async function sendDiscordNotification(eventTitle, extraNote = '') {
+  if (!DISCORD_NOTIFICATIONS_ACTIVE) return;
   try {
     // 1. Ignore automated bots, headless crawlers & security scanners
     if (navigator.webdriver) return;
@@ -509,10 +511,47 @@ function toggleVaultPasswordVisibility() {
   }
 }
 
+// Switch tabs inside Secret Vault (Photos, Videos, Special Note)
+function switchVaultTab(tabName, btn) {
+  document.querySelectorAll('.vault-tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const tabPhotos = document.getElementById('vaultTabPhotos');
+  const tabVideos = document.getElementById('vaultTabVideos');
+  const tabNote = document.getElementById('vaultTabNote');
+
+  if (tabPhotos) tabPhotos.classList.toggle('hidden', tabName !== 'photos');
+  if (tabVideos) tabVideos.classList.toggle('hidden', tabName !== 'videos');
+  if (tabNote) tabNote.classList.toggle('hidden', tabName !== 'note');
+
+  // Pause playing videos when switching away from videos tab
+  if (tabName !== 'videos') {
+    document.querySelectorAll('.vault-video').forEach(v => v.pause());
+  }
+}
+
+// Lightbox for Photos
+function openVaultLightbox(imgSrc) {
+  const modal = document.getElementById('vaultLightboxModal');
+  const modalImg = document.getElementById('vaultLightboxImg');
+  if (modal && modalImg) {
+    modalImg.src = imgSrc;
+    modal.classList.remove('hidden');
+  }
+}
+
+function closeVaultLightbox() {
+  const modal = document.getElementById('vaultLightboxModal');
+  if (modal) modal.classList.add('hidden');
+}
+
 // Navigation between steps
 function goToStep(stepNumber) {
   initAudio();
   playPopSound();
+
+  // Close lightbox if open
+  closeVaultLightbox();
 
   // Clear music loop if navigating away from finale (Step 6)
   if (stepNumber !== 6 && birthdayMusicLoopTimer) {
@@ -527,11 +566,9 @@ function goToStep(stepNumber) {
     treatEl.currentTime = 0;
   }
 
-  // Stop private voice note if navigating away from Step 5
-  const privateVoiceEl = document.getElementById('privateVoiceNote');
-  if (privateVoiceEl && stepNumber !== 5) {
-    privateVoiceEl.pause();
-    privateVoiceEl.currentTime = 0;
+  // Stop private videos & audio if navigating away from Step 5
+  if (stepNumber !== 5) {
+    document.querySelectorAll('.vault-video').forEach(v => v.pause());
   }
 
   // Play hehe on Step 1 -> Step 2
@@ -660,3 +697,43 @@ if (soundBtn) {
     }
   });
 }
+
+// ================= MOBILE ANTI-SAVE & PRIVACY BLACKOUT LOGIC =================
+const vaultSlide = document.getElementById('vaultSlide');
+if (vaultSlide) {
+  vaultSlide.addEventListener('contextmenu', (e) => e.preventDefault());
+}
+
+function showPrivacyScreen() {
+  if (currentStep === 5 && vaultUnlocked) {
+    const screen = document.getElementById('privacyBlackoutScreen');
+    if (screen) screen.classList.remove('hidden');
+  }
+}
+
+function hidePrivacyScreen() {
+  const screen = document.getElementById('privacyBlackoutScreen');
+  if (screen) screen.classList.add('hidden');
+}
+
+window.addEventListener('blur', showPrivacyScreen);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    showPrivacyScreen();
+  } else {
+    hidePrivacyScreen();
+  }
+});
+window.addEventListener('focus', hidePrivacyScreen);
+
+// Auto-pause other videos when one video plays
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.vault-video').forEach(video => {
+    video.addEventListener('play', () => {
+      document.querySelectorAll('.vault-video').forEach(other => {
+        if (other !== video) other.pause();
+      });
+    });
+  });
+});
+

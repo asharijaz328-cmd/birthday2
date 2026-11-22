@@ -13,6 +13,15 @@
 </head>
 <body>
 
+  <!-- Privacy Screen for Screenshot / App Switch Protection -->
+  <div id="privacyBlackoutScreen" class="privacy-blackout hidden">
+    <div class="privacy-blackout-content">
+      <div class="privacy-lock-icon">🔒</div>
+      <h3>Confidential View</h3>
+      <p>Content hidden during app switch</p>
+    </div>
+  </div>
+
   <!-- ================= COUNTDOWN LOCK SCREEN ================= -->
   <div id="countdownScreen" class="countdown-overlay">
     <div class="countdown-card">
@@ -103,18 +112,17 @@
         <p class="choice-feedback hidden" id="choiceFeedback">fahhhhhhhhhhhhhhhhhahhhhhhhhhhhhhhh</p>
       </div>
 
-      <!-- ================= STEP 3: THE ROAST (AFGANI SANDHA) ================= -->
+      <!-- ================= STEP 3: THE ROAST ================= -->
       <div class="step-slide" data-step="3">
-        <h2 class="slide-title">hehehe</h2>
-        <p class="slide-desc">
-          Aaj ke din duniya mein ek azeem shaksiyat... <br>
-          2 kannal pr pheli hui tui wala <b class="highlight-sandha">Afgani Sandha (Mota Bhai)</b> tashreef laya tha!
+        <h2 class="slide-title">Pehchana Isko?</h2>
+        <p class="slide-desc" style="font-size: 1.15rem; line-height: 1.7;">
+          Shakal se shareef harkaton se <b class="highlight-sandha">420!</b>
         </p>
         
         <!-- Polaroid Mini Preview -->
         <div class="polaroid-teaser">
           <div class="polaroid-frame">
-            <img src="images/photo1.jpg" alt="Mota Bhai" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';">
+            <img src="images/photo1.jpg" alt="Ahsan" onerror="this.onerror=null; this.src='images/image 1.jpeg';">
           </div>
         </div>
 
@@ -149,7 +157,7 @@
           <div class="secret-tag vault-tag">RESTRICTED • TOP SECRET</div>
           <h2 class="slide-title">Secret Vault 🔐</h2>
           <p class="slide-desc">
-            Yeh page strictly private hai. Sirf wahi open kar sakta hai jiske paas secret password ho!
+            Sirf makhsoos afrad ke liye... Password darj karein, yahan har kisi ka aana mana hai!
           </p>
 
           <form class="vault-form" onsubmit="event.preventDefault(); checkVaultPassword();">
@@ -164,7 +172,7 @@
                 <span>Unlock Vault 🔓</span>
               </button>
               <button class="action-btn text-skip-btn" type="button" onclick="goToStep(6)">
-                <span>Skip to Birthday Wish ⏭️</span>
+                <span>Skip</span>
               </button>
             </div>
           </form>
@@ -178,32 +186,114 @@
             Yeh private cheezein sirf tumhare dekhne ke liye hain! 🤫
           </p>
 
-          <!-- 1. Private Photo -->
-          <div class="polaroid-teaser private-polaroid">
-            <div class="polaroid-frame">
-              <img src="images/private1.jpg" alt="Secret Photo" onerror="this.src='images/photo1.jpg'">
-              <div class="polaroid-caption">Classified Memory 🔒</div>
+          <!-- Vault Filter Tabs -->
+          <div class="vault-tabs">
+            <button class="vault-tab-btn active" type="button" onclick="switchVaultTab('photos', this)">📸 Photos</button>
+            <button class="vault-tab-btn" type="button" onclick="switchVaultTab('videos', this)">🎬 Videos</button>
+            <button class="vault-tab-btn" type="button" onclick="switchVaultTab('note', this)">💌 Special Note</button>
+          </div>
+
+          <!-- TAB 1: PHOTOS GALLERY (15 Photos) -->
+          <div id="vaultTabPhotos" class="vault-tab-pane">
+            <div class="vault-gallery-grid no-save-zone">
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p1.jpeg')">
+                <img src="images/p1.jpeg" alt="Memory 1" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p2.jpeg')">
+                <img src="images/p2.jpeg" alt="Memory 2" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p3.jpeg')">
+                <img src="images/p3.jpeg" alt="Memory 3" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p4.jpeg')">
+                <img src="images/p4.jpeg" alt="Memory 4" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p5.jpeg')">
+                <img src="images/p5.jpeg" alt="Memory 5" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p6.jpeg')">
+                <img src="images/p6.jpeg" alt="Memory 6" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p7.jpeg')">
+                <img src="images/p7.jpeg" alt="Memory 7" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p8.jpeg')">
+                <img src="images/p8.jpeg" alt="Memory 8" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p9.jpeg')">
+                <img src="images/p9.jpeg" alt="Memory 9" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p10.jpeg')">
+                <img src="images/p10.jpeg" alt="Memory 10" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p11.jpeg')">
+                <img src="images/p11.jpeg" alt="Memory 11" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p12.jpeg')">
+                <img src="images/p12.jpeg" alt="Memory 12" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p13.jpeg')">
+                <img src="images/p13.jpeg" alt="Memory 13" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p14.jpeg')">
+                <img src="images/p14.jpeg" alt="Memory 14" class="protected-img" draggable="false" loading="lazy">
+              </div>
+              <div class="vault-photo-card" onclick="openVaultLightbox('images/p15.jpeg')">
+                <img src="images/p15.jpeg" alt="Memory 15" class="protected-img" draggable="false" loading="lazy">
+              </div>
+            </div>
+            <p class="vault-tap-hint">💡 Kisi bhi photo par click karke full view dekhein</p>
+          </div>
+
+          <!-- TAB 2: VIDEOS LIST (7 Videos) -->
+          <div id="vaultTabVideos" class="vault-tab-pane hidden">
+            <div class="vault-videos-list no-save-zone">
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 1</div>
+                <video src="images/v1.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 2</div>
+                <video src="images/v2.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 3</div>
+                <video src="images/v3.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 4</div>
+                <video src="images/v4.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 5</div>
+                <video src="images/v5.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 6</div>
+                <video src="images/v6.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
+              <div class="vault-video-card">
+                <div class="video-card-badge">🎬 Video 7</div>
+                <video src="images/v7.mp4" controls controlsList="nodownload" playsinline preload="metadata" class="vault-video"></video>
+              </div>
             </div>
           </div>
 
-          <!-- 2. Private Voice Note -->
-          <div class="private-audio-card">
-            <div class="audio-card-header">
-              <span>🎙️ Secret Voice Note:</span>
+          <!-- TAB 3: SPECIAL NOTE -->
+          <div id="vaultTabNote" class="vault-tab-pane hidden">
+            <div class="letter-card private-note-card no-save-zone" style="text-align: left; padding: 22px 20px;">
+              <div class="letter-header" style="margin-bottom: 14px;">
+                <span>💌 Special Note</span>
+                <span>Ahsan Special 😂</span>
+              </div>
+              <p class="letter-text" id="vaultCustomNote" style="font-size: 1.05rem; line-height: 1.85; color: #fff;">
+                yea note muthalo ka muthal maha muthal muthalo ka sardar ahsan ke  naam 😂🔥<br><br>
+                yea jab guuse me hota to yea gandu bolta hai: <br>
+                <span class="glow-word" style="font-size: 1.15rem; font-weight: 700; color: #ffbe0b;">"chal nikl loruuu, chod dalu ga"</span><br><br>
+                or sab se phele kela kha jata 🍌😂<br>
+                lulii iski hai nahi or iski baate sun lo! 💀
+              </p>
             </div>
-            <audio id="privateVoiceNote" controls src="audio/secret.mpeg" preload="none" class="custom-audio-player"></audio>
-          </div>
-
-          <!-- 3. Confidential Letter / Secret Message -->
-          <div class="letter-card private-note-card">
-            <div class="letter-header">
-              <span>🔐 Confidential Note</span>
-              <span>For Ahsan Only</span>
-            </div>
-            <p class="letter-text" id="vaultCustomNote">
-              Yeh special secret page sirf tumhare liye unlock hua hai! <br><br>
-              Yahan aap jo bhi secret memory, andar ki baat ya personal message likhna chahein, woh yahan aayega! ❤️🫂
-            </p>
           </div>
 
           <!-- Proceed to Grand Finale -->
@@ -249,21 +339,20 @@
             <span>To: Ahsan</span>
           </div>
           <p class="letter-text">
-            We've shared so many memories laughed together and experienced so many moments over the years.<br>
-            Honestly I'm very lucky to have a friend like you.
+            It's been almost 2 years since we became friends and honestly it's been a great experience.<br>
+            University life mein kuch log milte hain jo apni presence se memories ko aur bhi better bana dete hain and I'm glad we became friends.
           </p>
           <p class="letter-text">
-            Waqt ke sath sath bohat kuch badal jata hai but I hope hamari friendship hamesha aisi hi rahe.
+            Hope aane wale time mein bhi aisi hi achi bonding rahe aur maze karte rahen.
           </p>
           <p class="letter-text">
-            Allah ap ko bohat zeda kamiyabi de, apko khushiyan de or apko har wo cheez mile jis ki ap khuwaish rakhte ho. Ameen!
+            Allah apko life mein bohat sari khushiyan de kamyabi de apki har wish poori ho aur jo bhi goals hain wo achieve karo.
           </p>
           <p class="letter-text">
-            Hamesha khush rehna and keep growing.
+            Hamesha khush rehna keep smiling and keep growing.
           </p>
           <p class="letter-text">
-            You're not just a friend, you're family.<br>
-            Brothers for life! ❤️🫂
+            Enjoy your day and have an amazing year ahead! ❤️🎂
           </p>
         </div>
 
@@ -287,6 +376,14 @@
   <audio id="fahhSound" src="audio/Fahh.mpeg" preload="auto"></audio>
   <audio id="heheSound" src="audio/hehe.mpeg" preload="auto"></audio>
   <audio id="treatSound" src="audio/treat.mpeg" preload="auto"></audio>
+
+  <!-- Lightbox Modal for Full View Photo -->
+  <div id="vaultLightboxModal" class="vault-lightbox hidden" onclick="closeVaultLightbox()">
+    <div class="lightbox-close-btn" onclick="closeVaultLightbox()">✖</div>
+    <div class="lightbox-img-wrapper no-save-zone" onclick="event.stopPropagation()">
+      <img id="vaultLightboxImg" src="" alt="Full view" class="protected-img" draggable="false">
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
