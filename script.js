@@ -604,6 +604,42 @@ function toggleVaultPasswordVisibility() {
   }
 }
 
+// Automatically re-lock the secret vault whenever visitor exits Step 5
+function relockVault() {
+  vaultUnlocked = false;
+
+  const lockScreen = document.getElementById('vaultLockScreen');
+  const unlockedContent = document.getElementById('vaultUnlockedContent');
+  const vaultInput = document.getElementById('vaultPasswordInput');
+  const errorEl = document.getElementById('vaultError');
+  const eyeBtn = document.getElementById('vaultEyeIcon');
+
+  if (lockScreen) {
+    lockScreen.classList.remove('hidden');
+    lockScreen.style.opacity = '1';
+  }
+  if (unlockedContent) {
+    unlockedContent.classList.add('hidden');
+    unlockedContent.style.opacity = '0';
+  }
+  if (vaultInput) {
+    vaultInput.value = '';
+    vaultInput.type = 'password';
+  }
+  if (eyeBtn) {
+    eyeBtn.innerText = '👁️';
+  }
+  if (errorEl) {
+    errorEl.classList.add('hidden');
+  }
+
+  // Reset tab to Photos
+  const firstTabBtn = document.querySelector('.vault-tab-btn');
+  if (firstTabBtn && typeof switchVaultTab === 'function') {
+    switchVaultTab('photos', firstTabBtn);
+  }
+}
+
 // In-Memory RAM Audio Buffers (Decoded PCM for 0ms latency)
 const pcmBuffers = {};
 
@@ -751,9 +787,10 @@ function goToStep(stepNumber) {
     stopAudioClip('treatSound');
   }
 
-  // Stop private videos & audio if navigating away from Step 5
+  // When leaving Step 5 (Secret Vault), stop videos and automatically RE-LOCK the vault
   if (stepNumber !== 5) {
     document.querySelectorAll('.vault-video').forEach(v => v.pause());
+    relockVault();
   }
 
   // Play hehe on Step 1 -> Step 2
