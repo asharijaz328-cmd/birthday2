@@ -540,7 +540,18 @@ function playAudioClip(id) {
 }
 
 // ================= SECRET VAULT PASSWORD LOGIC =================
-const VAULT_PASSWORD = "kfueit328";
+// DUAL PASSWORD SYSTEM:
+// - Website (Browser): kfueit328
+// - Android App (ahsan.apk): nahihai
+const isAppEnvironment = window.location.search.includes('src=app') || 
+                         window.navigator.userAgent.includes('AhsanApp') ||
+                         window.sessionStorage.getItem('isAhsanApp') === 'true';
+
+if (window.location.search.includes('src=app') || window.navigator.userAgent.includes('AhsanApp')) {
+  try { window.sessionStorage.setItem('isAhsanApp', 'true'); } catch (_) {}
+}
+
+const VAULT_PASSWORD = isAppEnvironment ? "nahihai" : "kfueit328";
 let vaultUnlocked = false;
 
 function checkVaultPassword() {

@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private static final String BIRTHDAY_URL = "https://asharijaz328-cmd.github.io/birthday2/";
+    private static final String BIRTHDAY_URL = "https://asharijaz328-cmd.github.io/birthday2/?src=app";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         settings.setLoadWithOverviewMode(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setUserAgentString(settings.getUserAgentString() + " AhsanApp");
 
         webView.setBackgroundColor(Color.parseColor("#0a0e17"));
 
