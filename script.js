@@ -540,7 +540,7 @@ function playAudioClip(id) {
 }
 
 // ================= SECRET VAULT PASSWORD LOGIC =================
-const VAULT_PASSWORD = "1";
+const VAULT_PASSWORD = "kfueit328";
 let vaultUnlocked = false;
 
 function checkVaultPassword() {
@@ -550,7 +550,7 @@ function checkVaultPassword() {
   if (!input) return;
 
   const entered = input.value.trim();
-  if (entered === VAULT_PASSWORD) {
+  if (entered.toLowerCase() === VAULT_PASSWORD.toLowerCase()) {
     vaultUnlocked = true;
     preloadVaultVideos();
     if (errorEl) errorEl.classList.add('hidden');
