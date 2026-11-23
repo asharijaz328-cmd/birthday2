@@ -12,13 +12,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends AppCompatActivity {
 
     private WebView webView;
     private ProgressBar progressBar;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private static final String BIRTHDAY_URL = "https://asharijaz328-cmd.github.io/birthday2/?src=app";
 
     @Override
@@ -39,12 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
         webView = findViewById(R.id.webView);
         progressBar = findViewById(R.id.progressBar);
-        swipeRefreshLayout = findViewById(R.id.swipeRefresh);
 
         configureWebView();
-
-        swipeRefreshLayout.setColorSchemeColors(Color.parseColor("#ffbe0b"), Color.parseColor("#ff007f"));
-        swipeRefreshLayout.setOnRefreshListener(() -> webView.reload());
 
         webView.loadUrl(BIRTHDAY_URL);
     }
@@ -69,14 +63,12 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 progressBar.setVisibility(View.GONE);
-                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 progressBar.setVisibility(View.GONE);
-                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
