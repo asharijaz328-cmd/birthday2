@@ -49,11 +49,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ahsan.apk
-          tag_name: app-v1.1
-          name: "ahsan (Anti-Screenshot App)"
+          tag_name: app-v1.2
+          name: "ahsan v1.2 (Photo Icon & Developer Bypass)"
           body: |
             ### 🛑 Anti-Screenshot Android App Ready!
             - **App Name:** ahsan
+            - **App Icon:** Customized with Ahsan's official portrait photo
+            - **Developer Bypass:** Added Developer Mode prompt (Key: `houseno328`)
             - **Screenshot Blocked:** Phone displays `Can't take screenshot due to security policy`.
             - **Screen Recording Blocked:** Screen recorder captures only black screen.
             

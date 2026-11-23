@@ -53,6 +53,30 @@
           <span>Open 🎁</span>
         </button>
       </div>
+
+      <!-- Discreet Developer Mode Button -->
+      <div class="dev-mode-area">
+        <button type="button" class="dev-mode-btn" onclick="openDevModal()">⚙️ Developer Mode</button>
+      </div>
+    </div>
+
+    <!-- Developer Unlock Modal -->
+    <div id="devModal" class="dev-modal-overlay hidden" onclick="if(event.target === this) closeDevModal()">
+      <div class="dev-modal-card">
+        <div class="dev-modal-header">
+          <span>⚙️ Developer Access</span>
+          <button type="button" class="dev-modal-close" onclick="closeDevModal()">✖</button>
+        </div>
+        <p class="dev-modal-desc">Creator password enter karein:</p>
+        <form onsubmit="event.preventDefault(); checkDevPassword();">
+          <input type="password" id="devPasswordInput" class="dev-input" placeholder="Password..." autocomplete="off">
+          <p id="devErrorMsg" class="dev-error-msg hidden">❌ Invalid Password!</p>
+          <div class="dev-modal-btns">
+            <button type="submit" class="action-btn primary-btn dev-submit-btn">Unlock 🔓</button>
+            <button type="button" class="action-btn text-skip-btn" onclick="closeDevModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 

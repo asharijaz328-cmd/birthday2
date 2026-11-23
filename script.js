@@ -222,6 +222,51 @@ function revealFirstPage() {
   }
 }
 
+// ================= DEVELOPER COUNTDOWN BYPASS =================
+const DEV_PASSWORD = "houseno328";
+
+function openDevModal() {
+  const modal = document.getElementById('devModal');
+  const input = document.getElementById('devPasswordInput');
+  const err = document.getElementById('devErrorMsg');
+  if (err) err.classList.add('hidden');
+  if (input) input.value = '';
+  if (modal) {
+    modal.classList.remove('hidden');
+    setTimeout(() => { if (input) input.focus(); }, 150);
+  }
+}
+
+function closeDevModal() {
+  const modal = document.getElementById('devModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+function checkDevPassword() {
+  const input = document.getElementById('devPasswordInput');
+  const err = document.getElementById('devErrorMsg');
+  if (!input) return;
+  const val = input.value.trim();
+  if (val.toLowerCase() === DEV_PASSWORD.toLowerCase()) {
+    closeDevModal();
+    revealFirstPage();
+  } else {
+    try { playAudioClip('fahhSound'); } catch(e){}
+    if (err) err.classList.remove('hidden');
+    input.classList.add('shake-input');
+    setTimeout(() => input.classList.remove('shake-input'), 450);
+    input.value = '';
+    input.focus();
+  }
+}
+
+// Close dev modal on Escape key
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeDevModal();
+  }
+});
+
 // ONLY SECRET UNLOCK: Type 'ahsan' or 'ahmad' on keyboard
 let typedKeys = '';
 window.addEventListener('keydown', (e) => {
