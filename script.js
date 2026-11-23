@@ -481,8 +481,29 @@ function playHappyBirthdayMelody() {
   }, cumulativeTime + 1800);
 }
 
+const activeAudioSources = {};
+
+function stopAudioClip(id) {
+  // 1. Stop Web Audio API buffer node if actively playing
+  if (activeAudioSources[id]) {
+    try {
+      activeAudioSources[id].stop(0);
+      activeAudioSources[id].disconnect();
+    } catch (_) {}
+    delete activeAudioSources[id];
+  }
+
+  // 2. Stop HTML Audio element
+  const audioEl = document.getElementById(id);
+  if (audioEl) {
+    audioEl.pause();
+    audioEl.currentTime = 0;
+  }
+}
+
 function playAudioClip(id) {
   if (!soundEnabled) return;
+  stopAudioClip(id); // Stop previous instance if already playing
   initAudio();
 
   // Priority 1: Instant Web Audio API RAM buffer playback (0 millisecond delay!)
@@ -494,6 +515,14 @@ function playAudioClip(id) {
       gain.gain.value = 1.0;
       source.connect(gain);
       gain.connect(audioCtx.destination);
+      
+      source.onended = () => {
+        if (activeAudioSources[id] === source) {
+          delete activeAudioSources[id];
+        }
+      };
+
+      activeAudioSources[id] = source;
       source.start(0);
       return;
     } catch (_) {}
@@ -717,11 +746,9 @@ function goToStep(stepNumber) {
     birthdayMusicLoopTimer = null;
   }
 
-  // Stop treat audio if navigating away from Step 4
-  const treatEl = document.getElementById('treatSound');
-  if (treatEl && stepNumber !== 4) {
-    treatEl.pause();
-    treatEl.currentTime = 0;
+  // Stop treat audio immediately if navigating away from Step 4
+  if (stepNumber !== 4) {
+    stopAudioClip('treatSound');
   }
 
   // Stop private videos & audio if navigating away from Step 5
