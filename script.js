@@ -270,6 +270,45 @@ function initAudio() {
   }
 }
 
+// Unlock mobile hardware audio on very first user touch/tap
+let mobileAudioUnlocked = false;
+function unlockMobileAudio() {
+  if (mobileAudioUnlocked) return;
+  mobileAudioUnlocked = true;
+
+  initAudio();
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => {});
+  }
+
+  // Prime HTML audio elements silently so mobile decoder holds them in RAM
+  ['ohMyYesSound', 'fahhSound', 'heheSound', 'treatSound'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      const prevVol = el.volume;
+      el.volume = 0;
+      const p = el.play();
+      if (p !== undefined) {
+        p.then(() => {
+          el.pause();
+          el.currentTime = 0;
+          el.volume = prevVol || 1;
+        }).catch(() => {
+          el.volume = prevVol || 1;
+        });
+      }
+    }
+  });
+
+  window.removeEventListener('pointerdown', unlockMobileAudio);
+  window.removeEventListener('touchstart', unlockMobileAudio);
+  window.removeEventListener('click', unlockMobileAudio);
+}
+
+window.addEventListener('pointerdown', unlockMobileAudio, { passive: true });
+window.addEventListener('touchstart', unlockMobileAudio, { passive: true });
+window.addEventListener('click', unlockMobileAudio, { passive: true });
+
 // Simple Web Audio Synthesizer for Fun SFX
 function playTone(freq, type = 'sine', duration = 0.15, volume = 0.2) {
   if (!soundEnabled) return;
@@ -444,6 +483,23 @@ function playHappyBirthdayMelody() {
 
 function playAudioClip(id) {
   if (!soundEnabled) return;
+  initAudio();
+
+  // Priority 1: Instant Web Audio API RAM buffer playback (0 millisecond delay!)
+  if (audioCtx && pcmBuffers[id] && audioCtx.state !== 'suspended') {
+    try {
+      const source = audioCtx.createBufferSource();
+      source.buffer = pcmBuffers[id];
+      const gain = audioCtx.createGain();
+      gain.gain.value = 1.0;
+      source.connect(gain);
+      gain.connect(audioCtx.destination);
+      source.start(0);
+      return;
+    } catch (_) {}
+  }
+
+  // Priority 2: In-Memory Blob HTML Audio element
   const audioEl = document.getElementById(id);
   if (audioEl) {
     audioEl.currentTime = 0;
@@ -519,15 +575,45 @@ function toggleVaultPasswordVisibility() {
   }
 }
 
-// Pre-warm audio clips first so they trigger instantly with zero delay
+// In-Memory RAM Audio Buffers (Decoded PCM for 0ms latency)
+const pcmBuffers = {};
+
 function warmUpAudioClips() {
-  const audioIds = ['ohMyYesSound', 'fahhSound', 'heheSound', 'treatSound'];
-  audioIds.forEach(id => {
+  const audioMap = [
+    { id: 'ohMyYesSound', url: 'audio/ohmyyes.mpeg' },
+    { id: 'fahhSound', url: 'audio/Fahh.mpeg' },
+    { id: 'heheSound', url: 'audio/hehe.mpeg' },
+    { id: 'treatSound', url: 'audio/treat.mpeg' }
+  ];
+
+  audioMap.forEach(({ id, url }) => {
     const el = document.getElementById(id);
     if (el) {
       el.preload = 'auto';
       try { el.load(); } catch (_) {}
     }
+
+    // Fetch original audio file into RAM arrayBuffer and decode for instant playback
+    fetch(url)
+      .then(res => res.arrayBuffer())
+      .then(buffer => {
+        // Blob URL for HTML audio element
+        const blob = new Blob([buffer], { type: 'audio/mpeg' });
+        const blobUrl = URL.createObjectURL(blob);
+        if (el) {
+          el.src = blobUrl;
+          try { el.load(); } catch (_) {}
+        }
+
+        // Web Audio API decoding for 0ms playback
+        initAudio();
+        if (audioCtx) {
+          audioCtx.decodeAudioData(buffer.slice(0), decoded => {
+            pcmBuffers[id] = decoded;
+          }, () => {});
+        }
+      })
+      .catch(() => {});
   });
 }
 
